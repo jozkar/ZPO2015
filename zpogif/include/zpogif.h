@@ -1,6 +1,9 @@
 #ifndef ZPOGIF_H
 #define ZPOGIF_H
 
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
 #include "zpogif_error.h"
 
 #ifdef __cplusplus

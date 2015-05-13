@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-enum zpogif_error
+typedef enum
 {
 	ZPOGIF_NO_ERROR,
 	ZPOGIF_IO_ERROR,
@@ -22,7 +22,7 @@ enum zpogif_error
 	ZPOGIF_MALFORMED_IMAGE_DATA,
 	ZPOGIF_ANIMATION_NOT_SUPPORTED,
 	ZPOGIF_UNIDENTIFIED_ERROR
-};
+} zpogif_error;
 
 #ifdef __cplusplus
 }

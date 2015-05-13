@@ -67,7 +67,6 @@ namespace zpogif { namespace detail {
 			finish_buffer();
 			uint8_t terminator = 0;
 			io::write(stream, terminator);
-			std::cout << "Code writer finished" << std::endl;
 		}
 		
 	private:
@@ -94,7 +93,6 @@ namespace zpogif { namespace detail {
 		ptrdiff_t pixel_stride, 
 		ptrdiff_t row_stride)
 	{
-		std::cout << "Saving GIF" << std::endl;
 		io::write_array(of, "GIF89a", 6);
 		uint16_t width_le = io::to_little_endian(width);
 		uint16_t height_le = io::to_little_endian(height);
@@ -130,7 +128,6 @@ namespace zpogif { namespace detail {
 		
 		uint8_t flags = 0xf0 | color_table_size;
 		io::write(of, flags);
-		std::cout << "Pisu flagy " << (int) flags << std::endl;
 		
 		uint16_t todo = 0;
 		io::write(of, todo);
@@ -170,7 +167,6 @@ namespace zpogif { namespace detail {
 		
 		io::write(of, lzw_min_code_size);
 		code_writer<T> writer(of);
-		std::cout << "Min code size = " << (int)lzw_min_code_size << std::endl;
 		writer.code_size = lzw_min_code_size + 1;
 		writer.write(cc);
 		
@@ -220,7 +216,6 @@ namespace zpogif { namespace detail {
 		}
 		
 		{
-			std::cout << "Final code" << std::endl;
 			uint8_t final_emitted_code = buffer.size() == 1 ? buffer[0] : code_table.at(buffer);
 			writer.write(final_emitted_code);
 			writer.write(eoi);

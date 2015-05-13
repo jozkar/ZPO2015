@@ -1,6 +1,6 @@
-LIBRARY = libzpogif.so.1.0.0
-LDFLAGS += -Wl,-soname,libzpogif.so.1
-SOURCES = common.cpp gif-save.cpp main.cpp streamops.cpp zpogif.cpp
+LIBRARY = libzpogif.so
+LDFLAGS += -Wl,-soname,libzpogif.so
+SOURCES = common.cpp gif-save.cpp streamops.cpp zpogif.cpp
 PUBHEADERS = zpogif.hpp zpogif_error.h zpogif_exceptions.hpp
 PRIVHEADERS = common.hpp gif-load.hpp gif-save.hpp streamops.hpp 
 

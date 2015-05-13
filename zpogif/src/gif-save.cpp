@@ -115,7 +115,7 @@ namespace zpogif { namespace detail {
 					idx++;
 				}
 				
-				std::cout << "Doclusterováno, error: " << std::dec << error << std::endl;
+				std::cerr << "Doclusterováno, error: " << std::dec << error << std::endl;
 			}
 			
 			for (auto pair : clusters)

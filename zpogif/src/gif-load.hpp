@@ -31,7 +31,6 @@ namespace zpogif { namespace detail {
 				if (block_length == block_position)
 				{
 					block_length = io::read<uint8_t>(stream);
-					std::cout << "Reading block with size " << block_length << std::endl;
 					if (block_length == 0) // jsme na konci dat?
 					{
 						if (remaining_code_size != code_size) throw unexpected_end_of_block();
@@ -121,14 +120,11 @@ namespace zpogif { namespace detail {
 		std::function<void*(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
 		std::function<void(uint16_t, uint16_t, void*)> deallocator)
 	{
-		std::cout << "Reading header" << std::endl;
 		{
 			char header[6];
 			io::read_array(is, header, 6);
 			if (memcmp(header, "GIF89a", 6) != 0 && memcmp(header, "GIF87a", 6) != 0) throw invalid_header();
 		}
-		
-		std::cout << "Reading dimensions and flags" << std::endl;
 		
 		uint16_t width = io::from_little_endian(io::read<uint16_t>(is));
 		uint16_t height = io::from_little_endian(io::read<uint16_t>(is));
@@ -146,15 +142,11 @@ namespace zpogif { namespace detail {
 		ptrdiff_t pixel_stride;
 		ptrdiff_t row_stride;
 		
-		std::cout << "Allocating image" << std::endl;
-		
 		void* image = allocator(width, height, &pixel_stride, &row_stride);
 		*pixel_stride_out = pixel_stride;
 		*row_stride_out = row_stride;
 		if (image == nullptr) throw out_of_memory();
 		image_allocator_sentry image_sentry(image, width, height, deallocator);
-		
-		std::cout << "Reading global color table" << std::endl;
 		
 		std::vector<Rgb> global_color_table(global_color_table_length);
 		if (has_global_color_table)
@@ -181,26 +173,22 @@ namespace zpogif { namespace detail {
 				switch (label)
 				{
 					case graphic_control_extension::label:
-						std::cout << "Reading gcext" << std::endl;
 						if (has_gcext) throw unexpected_block();
 						gcext.read(is);
 						has_gcext = true;
 						break;
 					
 					case application_extension::label:
-						std::cout << "Reading aext" << std::endl;
 						if (has_gcext) throw unexpected_block();
 						aext.ignore(is);
 						break;
 					
 					case comment_extension::label:
-						std::cout << "Reading cext" << std::endl;
 						if (has_gcext) throw unexpected_block();
 						cext.ignore(is);
 						break;
 					
 					case plain_text_extension::label:
-						std::cout << "Reading ptext" << std::endl;
 						ptext.ignore(is);
 						has_gcext = false;
 						break;
@@ -211,10 +199,8 @@ namespace zpogif { namespace detail {
 			}
 			else if (separator == 0x2c) // image descriptor
 			{
-				std::cout << "Reading image descriptor" << std::endl;
 				idesc.read(is);
 				
-				std::cout << "Reading compressed blocks" << std::endl;
 				uint8_t minimum_code_size = io::read<uint8_t>(is);
 				code_reader<T> reader(is);
 				reader.code_size = minimum_code_size + 1;
@@ -253,7 +239,6 @@ namespace zpogif { namespace detail {
 				{
 					if (code == cc)
 					{
-						std::cout << "Clearing code table" << std::endl;
 						code_table.clear();
 						reader.code_size = minimum_code_size + 1;
 						for (unsigned i = 0; i < cc; i++) code_table[i] = std::vector<uint8_t>(1, i);
@@ -262,13 +247,11 @@ namespace zpogif { namespace detail {
 					}
 					else if (code == eoi)
 					{
-						std::cout << "EOI" << std::endl;
 						break;
 					}
 					
 					if (is_first_code)
 					{
-						std::cout << "First code" << std::endl;
 						add_pixel(code);
 						is_first_code = false;
 					}
@@ -297,7 +280,6 @@ namespace zpogif { namespace detail {
 					
 					previous_code = code;
 				}
-				std::cout << "Finishing" << std::endl;
 				reader.finish();
 				has_gcext = false;
 			}
@@ -307,13 +289,11 @@ namespace zpogif { namespace detail {
 			}
 			else
 			{
-				std::cout << "Throwing invalid separator: " << std::hex << (int)separator << std::endl;
 				throw invalid_separator();
 			}
 		}
 		
 		image_sentry.disable();
-		std::cout << "GIF loaded" << std::endl;
 		
 		return image;
 	}
