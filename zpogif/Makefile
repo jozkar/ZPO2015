@@ -1,17 +1,20 @@
 LIBRARY = libzpogif.so.1.0.0
 LDFLAGS += -Wl,-soname,libzpogif.so.1
 SOURCES = common.cpp gif-save.cpp main.cpp streamops.cpp zpogif.cpp
-HEADERS = common.hpp gif-load.hpp streamops.hpp zpogif.h zpogif.hpp zpogif_error.h
+PUBHEADERS = zpogif.hpp zpogif_error.h zpogif_exceptions.hpp
+PRIVHEADERS = common.hpp gif-load.hpp gif-save.hpp streamops.hpp 
 
-HEADERDIR = src
+PUBHEADERDIR = include
+PRIVHEADERDIR = src
 SRCDIR = src
 OBJDIR = obj
 
-CXXFLAGS += -g -std=c++11 -Wall -pedantic -I$(HEADERDIR)
+CXXFLAGS += -g -std=c++11 -Wall -pedantic -I$(PUBHEADERDIR) -I$(PRIVHEADERDIR)
 
 OBJSFULL = $(addprefix $(OBJDIR)/,$(addsuffix .o, $(SOURCES)))
 SOURCESFULL = $(addprefix $(SRCDIR)/,$(SOURCES))
-HEADERSFULL = $(addprefix $(HEADERDIR)/,$(HEADERS))
+PUBHEADERSFULL = $(addprefix $(PUBHEADERDIR)/,$(PUBHEADERS))
+PRIVHEADERSFULL = $(addprefix $(PRIVHEADERDIR)/,$(PRIVHEADERS))
 
 all: $(LIBRARY)
 
@@ -22,7 +25,7 @@ clean:
 $(LIBRARY): $(OBJSFULL)
 	$(CXX) -shared $(CXXFLAGS) $(LDLIBS) $(LDFLAGS) -o $@ $^
 
-$(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp $(HEADERSFULL)
+$(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp $(PUBHEADERSFULL) $(PRIVHEADERSFULL)
 	mkdir -p $(@D)
 	$(CXX) -fPIC $(CPPFLAGS) $(CXXFLAGS) -o $@ -c $<
 
