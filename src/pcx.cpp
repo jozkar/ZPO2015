@@ -37,7 +37,7 @@ void BMP::createGrayScale(unsigned int width, unsigned int height){
 		exit(ERROR);
 	}
 
-	this->setType(GrayScale);
+    this->setType(GrayScale);
     this->setBitsPerPixel(8);
     this->setWidth(width);
     this->setHeight(height);
@@ -68,7 +68,7 @@ void BMP::createTrueColor(unsigned int width, unsigned int height){
 		exit(ERROR);
 	}
 
-	this->setType(TrueColor);
+    this->setType(TrueColor);
     this->setBitsPerPixel(24);
     this->setWidth(width);
     this->setHeight(height);
@@ -123,19 +123,6 @@ void BMP::fillPixels(){
             	 break;
         default: break;
     }
-}
-
-/*
- *  Vypsani informaci o bitmape do retezce
- */
-std::string BMP::getInfo(){
-
-    std::ostringstream stream;
-    stream << "width: " << this->getWidth() <<
-			  "    height: " << this->getHeight() <<
-			  "  bpp: " << this->getBitsPerPixel();
-
-  	return stream.str();
 }
 
 /*
@@ -244,10 +231,10 @@ int BMP::getPixelGrayScale(int x, int y){
  */
 int BMP::getPixelRGB(int x, int y){
 
-	unsigned char *px;
+    unsigned char *px;
     int result;
 
-	px = this->pixels + 3 * x + y * this->getBytesPerLine();
+    px = this->pixels + 3 * x + y * this->getBytesPerLine();
     result = *px++;
     result |= (*px++)<<8;
     result |= (*px)<<16;
@@ -419,8 +406,8 @@ void BMP::lineTo(int x, int y)
             			dx=abs(x - this->cpx);
             			dy=abs(y - this->cpy);
 
-						if(dx >= dy){
-							// uhel je mensi nez 45 stupnu
+				if(dx >= dy){
+					// uhel je mensi nez 45 stupnu
                 			npx = dx;
 			                delta = (dy << 1) - dx;
 			                di1 = dy << 1;
@@ -438,19 +425,19 @@ void BMP::lineTo(int x, int y)
 			                xi2 = 1;
 			            }
 
-						if((int)this->cpx > x){
-							// inverze x-ovych prirustku
+				if((int)this->cpx > x){
+					// inverze x-ovych prirustku
 			                xi1 = -xi1;
 			                xi2 = -xi2;
 			            }
 
-						if((int)this->cpy > y){
-						    // inverze y-ovych prirustku
+				if((int)this->cpy > y){
+				        // inverze y-ovych prirustku
 			                yi1 = -yi1;
 			                yi2 = -yi2;
 			            }
 
-						for (int i = 0; i <= npx; i++) {
+				for (int i = 0; i <= npx; i++) {
 			                *px = (unsigned char)this->getColor();
 			                if(delta < 0){
 			                    delta += di1;
@@ -466,8 +453,8 @@ void BMP::lineTo(int x, int y)
             			dx=abs(x - this->cpx);
             			dy=abs(y - this->cpy);
 
-						if(dx >= dy){
-							// uhel je mensi nez 45 stupnu
+				if(dx >= dy){
+					// uhel je mensi nez 45 stupnu
                 			npx = dx;
 			                delta = (dy << 1) - dx;
 			                di1 = dy << 1;
@@ -485,19 +472,19 @@ void BMP::lineTo(int x, int y)
 			                xi2 = 3;
 			            }
 
-						if((int)this->cpx > x){
-							// inverze x-ovych prirustku
+				if((int)this->cpx > x){
+					// inverze x-ovych prirustku
 			                xi1 = -xi1;
 			                xi2 = -xi2;
 			            }
 
-						if((int)this->cpy > y){
-						    // inverze y-ovych prirustku
+				if((int)this->cpy > y){
+ 	 	 		        // inverze y-ovych prirustku
 			                yi1 = -yi1;
 			                yi2 = -yi2;
 			            }
 
-						for (int i = 0; i <= npx; i++) {
+				for (int i = 0; i <= npx; i++) {
 			                *px = (unsigned char)this->R;
                 			*(px+1) = (unsigned char)this->G;
                 			*(px+2) = (unsigned char)this->B;
@@ -606,7 +593,7 @@ int BMP::saveToPCX(char *out){
  */
 int BMP::saveToGrayScalePCX(char *out){
 
-	FILE *fout;
+    FILE *fout;
     int size, count, result;
     unsigned char *px;
 
@@ -713,7 +700,7 @@ int BMP::saveToGrayScalePCX(char *out){
  */
 int BMP::saveToTrueColorPCX(char *out){
 
-	FILE *fout;
+    FILE *fout;
     int size, count, result;
     unsigned char *px;
 
@@ -885,7 +872,7 @@ int BMP::loadFromPCX(char *in){
 
             if(this->header.bpp == 8 && this->header.numberBitPlanes == 1){
 
-				opx = this->pixels + height * this->getBytesPerLine();
+				opx = this->pixels + (height * this->getBytesPerLine());
                 int i=0;
 
                 	do{
@@ -910,7 +897,7 @@ int BMP::loadFromPCX(char *in){
             if(this->header.bpp == 8 && this->header.numberBitPlanes == 3){
 
                 for(int j = 0; j < 3; j++) {
-                    opx = this->pixels + height * this->getBytesPerLine() + 2 - j;
+                    opx = this->pixels + (height * this->getBytesPerLine()) + 2 - j;
                     int i = 0;
 
                     	do {
