@@ -3,7 +3,7 @@
 
 #include <cstring>
 #include "streamops.hpp"
-
+#include "zpogif_format.h"
 
 namespace zpogif { namespace detail {
 	
@@ -111,8 +111,22 @@ namespace zpogif { namespace detail {
 		std::function<void(uint16_t, uint16_t, void*)> deallocator;
 	};
 
+	inline uint8_t to_grayscale(Rgb color)
+	{
+		return (299 * color.r + 587 * color.g + 114 * color.b) / 1000;
+	}
+
+	inline void write_color(void* ptr, zpogif_format format, Rgb color)
+	{
+		if (format == ZPOGIF_RGB)
+			*reinterpret_cast<Rgb*>(ptr) = color;
+		else
+			*reinterpret_cast<uint8_t*>(ptr) = to_grayscale(color);
+	}
+
 	template <typename T>
 	void* gif_load(T is, 
+		zpogif_format format,
 		uint16_t* width_out,
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
@@ -136,7 +150,7 @@ namespace zpogif { namespace detail {
 		bool has_global_color_table = flags & 0x80;
 		uint8_t global_color_table_size = flags & 0x7;
 		auto global_color_table_length = has_global_color_table ? 1 << (global_color_table_size + 1) : 0;
-		io::read<uint8_t>(is); // global_background_color
+		uint8_t global_background_color = io::read<uint8_t>(is);
 		io::read<uint8_t>(is); // pixel aspect ratio
 		
 		ptrdiff_t pixel_stride;
@@ -152,6 +166,19 @@ namespace zpogif { namespace detail {
 		if (has_global_color_table)
 		{
 			io::read_array(is, global_color_table.data(), global_color_table_length);
+		}
+		
+		if (has_global_color_table)
+		{
+			for (unsigned y = 0; y < height; y++)
+			{
+				uint8_t* row_ptr = reinterpret_cast<uint8_t*>(image) + y * row_stride;
+				for (unsigned x = 0; x < width; x++)
+				{
+					uint8_t* pixel_ptr = row_ptr + x * pixel_stride;
+					write_color(pixel_ptr, format, global_color_table.at(global_background_color));
+				}
+			}
 		}
 		
 		bool has_gcext = false;
@@ -221,7 +248,7 @@ namespace zpogif { namespace detail {
 					
 					uint8_t* imptr = reinterpret_cast<uint8_t*>(image);
 					uint8_t* pixelptr = imptr + (idesc.top + imy) * row_stride + (idesc.left + imx) * pixel_stride;
-					*reinterpret_cast<Rgb*>(pixelptr) = color_table.at(index);
+					write_color(pixelptr, format, color_table.at(index));
 					
 					imx++;
 					if (imx == idesc.width)

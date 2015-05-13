@@ -5,19 +5,22 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "zpogif_error.h"
+#include "zpogif_format.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-	zpogif_error zpogif_save(FILE* f, 
+	zpogif_error zpogif_save(FILE* f,
+		zpogif_format format,
 		const void* image, 
 		uint16_t width, 
 		uint16_t height, 
 		ptrdiff_t pixel_stride, 
 		ptrdiff_t row_stride);
 
-	zpogif_error zpogif_load(FILE* f, 
+	zpogif_error zpogif_load(FILE* f,
+		zpogif_format format,
 		void** image_out, 
 		uint16_t* width_out,
 		uint16_t* height_out,

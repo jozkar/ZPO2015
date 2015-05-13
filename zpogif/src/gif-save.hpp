@@ -7,6 +7,7 @@
 #include <map>
 #include "common.hpp"
 #include "streamops.hpp"
+#include "zpogif_format.h"
 
 namespace zpogif { namespace detail {
 	void clusterize(const std::set<Rgb>& colors, std::map<Rgb, uint8_t>& idxmap, std::vector<Rgb>& color_table);
@@ -85,8 +86,21 @@ namespace zpogif { namespace detail {
 		std::vector<uint8_t> buffer;
 	};
 
+	Rgb read_color(const void* ptr, zpogif_format format)
+	{
+		if (format == ZPOGIF_RGB)
+		{
+			return *reinterpret_cast<const Rgb*>(ptr);
+		}
+		else
+		{
+			return Rgb(*reinterpret_cast<const uint8_t*>(ptr));
+		}
+	}
+
 	template<typename T>
 	void gif_save(T of, 
+		zpogif_format format,
 		const void* image, 
 		uint16_t width, 
 		uint16_t height, 
@@ -106,7 +120,7 @@ namespace zpogif { namespace detail {
 			const uint8_t* row_ptr = reinterpret_cast<const uint8_t*>(image) + row_stride * y;
 			for (uint32_t x = 0; x < width; x++)
 			{
-				Rgb color = *reinterpret_cast<const Rgb*>(row_ptr + pixel_stride * x);
+				Rgb color = read_color(row_ptr + pixel_stride * x, format);
 				colors.insert(color);
 			}
 		}
@@ -175,7 +189,7 @@ namespace zpogif { namespace detail {
 			const uint8_t* row_ptr = reinterpret_cast<const uint8_t*>(image) + row_stride * y;
 			for (uint32_t x = 0; x < width; x++)
 			{
-				Rgb color = *reinterpret_cast<const Rgb*>(row_ptr + pixel_stride * x);
+				Rgb color = read_color(row_ptr + pixel_stride * x, format);
 				uint8_t idx = color_table[color];
 				
 				if (x == 0 && y == 0)

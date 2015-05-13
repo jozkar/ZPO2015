@@ -6,16 +6,18 @@
 namespace zpogif
 {
 	void save(std::ostream& of, 
+		zpogif_format format,
 		const void* image, 
 		uint16_t width, 
 		uint16_t height, 
 		ptrdiff_t pixel_stride, 
 		ptrdiff_t row_stride)
 	{
-		detail::gif_save<std::ostream&>(of, image, width, height, pixel_stride, row_stride);
+		detail::gif_save<std::ostream&>(of, format, image, width, height, pixel_stride, row_stride);
 	}
 
 	void* load(std::istream& is, 
+		zpogif_format format,
 		uint16_t* width_out,
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
@@ -23,20 +25,22 @@ namespace zpogif
 		std::function<void*(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
 		std::function<void(uint16_t, uint16_t, void*)> deallocator)
 	{
-		return detail::gif_load<std::istream&>(is, width_out, height_out, pixel_stride_out, row_stride_out, allocator, deallocator);
+		return detail::gif_load<std::istream&>(is, format, width_out, height_out, pixel_stride_out, row_stride_out, allocator, deallocator);
 	}
 	
 	void save(FILE* f, 
+		zpogif_format format,
 		const void* image, 
 		uint16_t width, 
 		uint16_t height, 
 		ptrdiff_t pixel_stride, 
 		ptrdiff_t row_stride)
 	{
-		detail::gif_save(f, image, width, height, pixel_stride, row_stride);
+		detail::gif_save(f, format, image, width, height, pixel_stride, row_stride);
 	}
 
 	void* load(FILE* f,
+		zpogif_format format,
 		uint16_t* width_out,
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
@@ -44,13 +48,14 @@ namespace zpogif
 		std::function<void*(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
 		std::function<void(uint16_t, uint16_t, void*)> deallocator)
 	{
-		return detail::gif_load(f, width_out, height_out, pixel_stride_out, row_stride_out, allocator, deallocator);
+		return detail::gif_load(f, format, width_out, height_out, pixel_stride_out, row_stride_out, allocator, deallocator);
 	}
 }
 
 extern "C"
 {
 	zpogif_error zpogif_save(FILE* f, 
+		zpogif_format format,
 		const void* image, 
 		uint16_t width, 
 		uint16_t height, 
@@ -61,6 +66,7 @@ extern "C"
 		{
 			zpogif::save(
 				f,
+				format,
 				image,
 				width,
 				height,
@@ -80,6 +86,7 @@ extern "C"
 	}
 
 	zpogif_error zpogif_load(FILE* f, 
+		zpogif_format format,
 		void** image_out, 
 		uint16_t* width_out,
 		uint16_t* height_out,
@@ -93,6 +100,7 @@ extern "C"
 		{
 			*image_out = zpogif::load(
 				f,
+				format,
 				width_out,
 				height_out,
 				pixel_stride_out,

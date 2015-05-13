@@ -18,14 +18,18 @@ int main(int argc, char** argv)
 	zpogif_error err;
 	
 	FILE* fin = fopen(argv[1], "rb");
-	err = zpogif_load(fin, &image, &width, &height, &color_stride, &row_stride, allocator, deallocator, NULL);
-	if (err != ZPOGIF_NO_ERROR) { printf("GIF loading failed\n"); return 1; }
+	if (!fin) { printf("Nepodařilo se otevřít vstupní soubor\n"); return 1; }
+	err = zpogif_load(fin, ZPOGIF_GRAYSCALE, &image, &width, &height, &color_stride, &row_stride, allocator, deallocator, NULL);
+	if (err != ZPOGIF_NO_ERROR) { printf("GIF loading failed\n"); fclose(fin); return 2; }
+	fclose(fin);
 	
 	printf("GIF loaded: %ux%upx, strides: %td, %td\n", width, height, color_stride, row_stride);
 	
 	FILE* fout = fopen(argv[2], "wb");
-	err = zpogif_save(fout, image, width, height, color_stride, row_stride);
-	if (err != ZPOGIF_NO_ERROR) { printf("GIF loading failed\n"); return 2; }
+	if (!fout) { printf("Nepodařilo se otevřít výstupní soubor\n"); return 3; }
+	err = zpogif_save(fout, ZPOGIF_GRAYSCALE, image, width, height, color_stride, row_stride);
+	if (err != ZPOGIF_NO_ERROR) { printf("GIF loading failed\n"); fclose(fout); return 4; }
+	fclose(fout);
 	
 	deallocator(width, height, image, NULL);
 	
