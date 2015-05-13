@@ -82,10 +82,12 @@ namespace zpogif { namespace detail {
 	{
 		inline image_allocator_sentry(
 			void* image,
+			zpogif_format format,
 			uint16_t width,
 			uint16_t height,
-			std::function<void(uint16_t, uint16_t, void*)> deallocator):
+			std::function<void(zpogif_format, uint16_t, uint16_t, void*)> deallocator):
 			image(image),
+			format(format),
 			width(width),
 			height(height),
 			deallocator(deallocator)
@@ -95,7 +97,7 @@ namespace zpogif { namespace detail {
 		{
 			if (image != nullptr)
 			{
-				deallocator(width, height, image);
+				deallocator(format, width, height, image);
 			}
 		}
 
@@ -106,9 +108,10 @@ namespace zpogif { namespace detail {
 
 	private:
 		void* image;
+		zpogif_format format;
 		uint16_t width;
 		uint16_t height;
-		std::function<void(uint16_t, uint16_t, void*)> deallocator;
+		std::function<void(zpogif_format, uint16_t, uint16_t, void*)> deallocator;
 	};
 
 	inline uint8_t to_grayscale(Rgb color)
@@ -131,8 +134,8 @@ namespace zpogif { namespace detail {
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
 		ptrdiff_t* row_stride_out,
-		std::function<void*(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
-		std::function<void(uint16_t, uint16_t, void*)> deallocator)
+		std::function<void*(zpogif_format, uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
+		std::function<void(zpogif_format, uint16_t, uint16_t, void*)> deallocator)
 	{
 		{
 			char header[6];
@@ -156,11 +159,11 @@ namespace zpogif { namespace detail {
 		ptrdiff_t pixel_stride;
 		ptrdiff_t row_stride;
 		
-		void* image = allocator(width, height, &pixel_stride, &row_stride);
+		void* image = allocator(format, width, height, &pixel_stride, &row_stride);
 		*pixel_stride_out = pixel_stride;
 		*row_stride_out = row_stride;
 		if (image == nullptr) throw out_of_memory();
-		image_allocator_sentry image_sentry(image, width, height, deallocator);
+		image_allocator_sentry image_sentry(image, format, width, height, deallocator);
 		
 		std::vector<Rgb> global_color_table(global_color_table_length);
 		if (has_global_color_table)

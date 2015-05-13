@@ -87,9 +87,17 @@ Parametry funkce jsou následující:
 * `pixel_stride_out` - Ukazatel na krok mezi jednotlivými pixely na řádku. Tato hodnota bude naplněna hodnotou, kterou během čtení obrázku dodá alokátor.
 * `row_stride_out` - Ukazatel na krok mezi jednotlivými řádky obrázku. Tato hodnota bude naplněna hodnotou, kterou během čtení obrázku dodá alokátor.
 * `allocator` - Ukazatel na funkci, která slouží pro alokaci nahrávaného obrázku.
-* `deallocator` - Ukazatel na funkcí, která slouží pro dealokaci nahrávaného obrázku. 
+* `deallocator` - Ukazatel na funkcí, která slouží pro dealokaci nahrávaného obrázku.
+* `allocator_data` - Ukazatel na libovolná uživatelská data, která budou předána do alokační a dealokační funkce.
 
 Funkce vrací hodnotu typu zpogif_error, která označuje, zda došlo při nahrávání k nějaké chybě.
+
+#### Alokace a dealokace obrázků
+
+Jak již bylo zmníněno, tak při nahrávání obrázku ze souboru je k alokaci obrázku v paměti použita uživatelem dodaná alokační funkce. Uživatel by taktéž měl dodat funkci dealokační, aby bylo možné uvolnit alokovanou paměť v případě chyby během nahrávání obrázku.
+
+Alokační funkce má pět parametrů v následujícím pořadí:
+* Šířka obrázku v pixelech
 
 ## Použité zdroje
 

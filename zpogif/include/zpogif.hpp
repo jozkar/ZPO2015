@@ -23,8 +23,8 @@ namespace zpogif {
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
 		ptrdiff_t* row_stride_out,
-		std::function<void*(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
-		std::function<void(uint16_t, uint16_t, void*)> deallocator);
+		std::function<void*(zpogif_format, uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
+		std::function<void(zpogif_format, uint16_t, uint16_t, void*)> deallocator);
 	
 	void save(FILE* f, 
 		zpogif_format format,
@@ -40,8 +40,8 @@ namespace zpogif {
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
 		ptrdiff_t* row_stride_out,
-		std::function<void*(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
-		std::function<void(uint16_t, uint16_t, void*)> deallocator);
+		std::function<void*(zpogif_format, uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
+		std::function<void(zpogif_format, uint16_t, uint16_t, void*)> deallocator);
 }
 
 #endif

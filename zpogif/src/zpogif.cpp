@@ -22,8 +22,8 @@ namespace zpogif
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
 		ptrdiff_t* row_stride_out,
-		std::function<void*(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
-		std::function<void(uint16_t, uint16_t, void*)> deallocator)
+		std::function<void*(zpogif_format, uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
+		std::function<void(zpogif_format, uint16_t, uint16_t, void*)> deallocator)
 	{
 		return detail::gif_load<std::istream&>(is, format, width_out, height_out, pixel_stride_out, row_stride_out, allocator, deallocator);
 	}
@@ -45,8 +45,8 @@ namespace zpogif
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
 		ptrdiff_t* row_stride_out,
-		std::function<void*(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
-		std::function<void(uint16_t, uint16_t, void*)> deallocator)
+		std::function<void*(zpogif_format, uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*)> allocator,
+		std::function<void(zpogif_format, uint16_t, uint16_t, void*)> deallocator)
 	{
 		return detail::gif_load(f, format, width_out, height_out, pixel_stride_out, row_stride_out, allocator, deallocator);
 	}
@@ -92,8 +92,8 @@ extern "C"
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
 		ptrdiff_t* row_stride_out,
-		void* (*allocator)(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*, void*),
-		void (*deallocator)(uint16_t, uint16_t, void*, void*),
+		void* (*allocator)(zpogif_format, uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*, void*),
+		void (*deallocator)(zpogif_format, uint16_t, uint16_t, void*, void*),
 		void* allocator_data)
 	{
 		try
@@ -105,11 +105,11 @@ extern "C"
 				height_out,
 				pixel_stride_out,
 				row_stride_out,
-				[=](uint16_t width, uint16_t height, ptrdiff_t* pixel_stride_out, ptrdiff_t* row_stride_out) {
-					return allocator(width, height, pixel_stride_out, row_stride_out, allocator_data);
+				[=](zpogif_format format, uint16_t width, uint16_t height, ptrdiff_t* pixel_stride_out, ptrdiff_t* row_stride_out) {
+					return allocator(format, width, height, pixel_stride_out, row_stride_out, allocator_data);
 				},
-				[=](uint16_t width, uint16_t height, void* image) {
-					return deallocator(width, height, image, allocator_data);
+				[=](zpogif_format format, uint16_t width, uint16_t height, void* image) {
+					return deallocator(format, width, height, image, allocator_data);
 				});
 			
 			return ZPOGIF_NO_ERROR;

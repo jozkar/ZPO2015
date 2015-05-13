@@ -26,8 +26,8 @@ extern "C" {
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
 		ptrdiff_t* row_stride_out,
-		void* (*allocator)(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*, void*),
-		void (*deallocator)(uint16_t, uint16_t, void*, void*),
+		void* (*allocator)(zpogif_format, uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*, void*),
+		void (*deallocator)(zpogif_format, uint16_t, uint16_t, void*, void*),
 		void* allocator_data);
 
 #ifdef __cplusplus
