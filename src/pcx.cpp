@@ -45,6 +45,7 @@ void BMP::createGrayScale(unsigned int width, unsigned int height){
     size = this->getBytesPerLine() * this->getHeight();
     this->setPixelCount(width * height);
     this->setByteCount(size);
+    this->loaded = false;
 
 	this->pixels = (unsigned char *)malloc(sizeof(unsigned char) * size);
 
@@ -76,6 +77,7 @@ void BMP::createTrueColor(unsigned int width, unsigned int height){
     size = this->getBytesPerLine() * this->getHeight();
     this->setPixelCount(width * height);
     this->setByteCount(size);
+    this->loaded = false;
 
 	this->pixels = (unsigned char *)malloc(sizeof(unsigned char) * size);
 
@@ -103,16 +105,16 @@ void BMP::fillPixels(){
     unsigned char *old = pixel;
 
     switch (this->getBitsPerPixel()) {
-        case 8: for(int y = 0; y < this->getHeight(); y++) {
-                	for(int x = 0; x < this->getWidth(); x++) {
+        case 8: for(unsigned int y = 0; y < this->getHeight(); y++) {
+                	for(unsigned int x = 0; x < this->getWidth(); x++) {
                     	*pixel++ = (unsigned char)(x+y);
                 	}
                 	old += this->getBytesPerLine();
                 	pixel = old;
             	}
             	break;
-        case 24: for(int y = 0; y < this->getHeight(); y++) {
-                 	for(int x = 0; x < this->getWidth(); x++) {
+        case 24: for(unsigned int y = 0; y < this->getHeight(); y++) {
+                 	for(unsigned int x = 0; x < this->getWidth(); x++) {
                     	*pixel++ = (unsigned char)x;
                     	*pixel++ = (unsigned char)y;
                     	*pixel++ = (unsigned char)(x+y);
@@ -356,8 +358,10 @@ void BMP::putPixelInt(int x, int y, int color){
 
     unsigned char *px;
     px = this->pixels + 3 * x + y * this->getBytesPerLine();
-    *px++ = (unsigned char)(color & 0x000000ff);
-    *px++ = (unsigned char)((color & 0x0000ff00) >> 8);
+    *px = (unsigned char)(color & 0x000000ff);
+    px++;
+    *px = (unsigned char)((color & 0x0000ff00) >> 8);
+    px++;
     *px = (unsigned char)((color & 0x00ff0000) >> 16);
 }
 
@@ -368,8 +372,8 @@ void BMP::putPixelRGB(int x, int y, unsigned char r, unsigned char g, unsigned c
 
     unsigned char *px;
     px = this->pixels + 3 * x + y * this->getBytesPerLine();
-    *px ++= r;
-    *px ++= g;
+    *px++ = r;
+    *px++ = g;
     *px = b;
 }
 
@@ -627,8 +631,10 @@ int BMP::saveToGrayScalePCX(char *out){
     else
         this->header.bytesPerLine = this->getWidth();
     this->header.paletteType = 1;
+    this->header.hSize = 0;
+    this->header.vSize = 0;
 
-    fout = fopen(out,"w");
+    fout = fopen(out,"wb");
     if(fout == NULL){
 		return ERROR;
 	}
@@ -640,7 +646,7 @@ int BMP::saveToGrayScalePCX(char *out){
         return ERROR;
     }
 
-    for (int i = this->getHeight() - 1; i >= 0; i--){
+    for (int i = (this->getHeight() - 1); i >= 0; i--){
         unsigned char character;
         unsigned char last;
         int runCount = 0;
@@ -683,7 +689,7 @@ int BMP::saveToGrayScalePCX(char *out){
 	fputc(0x0c, fout);
 
     // zapis palety (po slozkach RGB)
-	for(int i = 0; i < 256; i++){
+    for(int i = 0; i < 256; i++){
         fputc(i, fout);
         fputc(i, fout);
         fputc(i, fout);
@@ -716,26 +722,36 @@ int BMP::saveToTrueColorPCX(char *out){
     size = this->getBytesPerLine();
 
     // naplneni hlavicky
-    memset(&this->header, 0, sizeof(this->header));
-    this->header.id = 10;                                // manufacturer
-    this->header.version = 5;                            // Paintbrush version 3.0 and >
-    this->header.rle = 1;                                // PCX run length encoding
-    this->header.bpp = 8;                                // 1 bit per pixel
-    this->header.xBegin = 0;
-    this->header.yBegin = 0;
-    this->header.xEnd = this->getWidth() - 1;
-    this->header.yEnd = this->getHeight() - 1;
-    this->header.hDPI = 300;
-    this->header.vDPI = 300;
-    this->header.reservedByte = 0;
-    this->header.numberBitPlanes = 3;
-    if (this->getWidth() & 0x01)
-        this->header.bytesPerLine = this->getWidth() + 1;
-    else
-        this->header.bytesPerLine = this->getWidth();
-    this->header.paletteType = 1;
+    if(!this->loaded){
+	    memset(&this->header, 0, sizeof(this->header));
+	    this->header.id = 10;                                // manufacturer
+	    this->header.version = 5;                            // Paintbrush version 3.0 and >
+	    this->header.rle = 1;                                // PCX run length encoding
+	    this->header.bpp = 8;                                // 1 bit per pixel
+	    this->header.xBegin = 0;
+	    this->header.yBegin = 0;
+	    this->header.xEnd = this->getWidth() - 1;
+	    this->header.yEnd = this->getHeight() - 1;
+	    this->header.hDPI = 300;
+	    this->header.vDPI = 300;
+	    this->header.reservedByte = 0;
+	    this->header.numberBitPlanes = 3;
+	    if (this->getWidth() & 0x01)
+	        this->header.bytesPerLine = this->getWidth() + 1;
+	    else
+	        this->header.bytesPerLine = this->getWidth();
+	    this->header.paletteType = 1;
+	    this->header.hSize = 0;
+            this->header.vSize = 0;
+    }else{
+ 	    this->header.id = 10;                                // manufacturer
+            this->header.version = 5;                            // Paintbrush version 3.0 and >
+            this->header.rle = 1;                                // PCX run length encoding
+            this->header.bpp = 8;
+	    this->header.numberBitPlanes = 3;
+    }
 
-    fout = fopen(out,"w");
+    fout = fopen(out,"wb");
     if(fout == NULL){
 		return ERROR;
 	}
@@ -790,8 +806,6 @@ int BMP::saveToTrueColorPCX(char *out){
         }
     }
 
-	fputc(0x0c, fout);
-
     fclose(fout);
 
 	return OK;
@@ -807,17 +821,15 @@ int BMP::loadFromPCX(char *in){
     int width, height;                            // bitmap/pixmap properties
 
     int count;
-    unsigned char palette[768];                   // palette
 
     if(in == NULL){
 		std::cerr << "ERROR: Empty input file name.\n";
 		return ERROR;
 	}
 
-	fin = fopen(in, "r");
+	fin = fopen(in, "rb");
 
     if(fin){
-
 		count = fread(&this->header, sizeof(this->header), 1, fin);
 
         if(count != 1) {
@@ -827,7 +839,7 @@ int BMP::loadFromPCX(char *in){
         }
 
 
-		if(this->header.id != 0x0a){
+		if(this->header.id != 0x0a || this->header.rle !=1){
 			std::cerr << "ERROR: Unknown header id in input file.\n";
 		    fclose(fin);
             return ERROR;
@@ -837,36 +849,24 @@ int BMP::loadFromPCX(char *in){
         height = this->header.yEnd - this->header.yBegin + 1;
 
         // vytvoreni bitmapy
-        if((this->header.bpp == 1 && this->header.numberBitPlanes == 4) ||
-		   (this->header.bpp == 8 && this->header.numberBitPlanes == 1)){
+        if(this->header.bpp == 8 && this->header.numberBitPlanes == 1){
 			createGrayScale(width, height);
-		}
+			this->loaded = true;
+		}else{
         if(this->header.bpp == 8 && this->header.numberBitPlanes == 3){
 			createTrueColor(width, height);
+			this->loaded = true;
+		}else{
+			std::cerr << "ERROR: Unknown bitmap type.\n";
+	                fclose(fin);
+        		return ERROR;
 		}
-
-		// nacteni barevne palety
-        if(this->header.bpp == 1 && this->header.numberBitPlanes == 4){
-           memset(palette, 0, 768);
-           for(int i = 0; i < 48; i++){
-               palette[i] = this->header.palette[i] >> 2;
-           }
-        }
-
-        if(this->header.bpp == 8 && this->header.numberBitPlanes == 1){
-            fseek(fin, -769, SEEK_END);
-            int i = getc(fin);
-            if(i == 0x0c){
-                for(i = 0; i < 768; i++){
-                    palette[i] = ((unsigned char)getc(fin)) >> 2;
-                }
-            }
-        }
+	}
 
         // posun v souboru na bitmapu
         fseek(fin, sizeof(this->header), SEEK_SET);
 
-		while(height--){
+	while(height--){
             unsigned char c;
             unsigned char *opx;
 
