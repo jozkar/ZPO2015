@@ -25,12 +25,21 @@ void createTrueColorPcx(int width, int height, const char *filename)
     printf("done file %s\n", filename);
 }
 
-void loadTrueColorPcx(const char *filename, const char *out)
+void loadGrayScalePcx(const char *filename, const char *out)
 {
     BMP bmp(GrayScale, 1, 1);
     printf("loading truecolor PCX %s to %s\n", filename, out);
     bmp.loadFromPCX((char *)filename);
     bmp.saveToGrayScalePCX((char *)out);
+    printf("done file %s\n", out);
+}
+
+void loadTrueColorPcx(const char *filename, const char *out)
+{
+    BMP bmp(TrueColor, 1, 1);
+    printf("loading truecolor PCX %s to %s\n", filename, out);
+    bmp.loadFromPCX((char *)filename);
+    bmp.saveToTrueColorPCX((char *)out);
     printf("done file %s\n", out);
 }
 
@@ -46,7 +55,10 @@ int main(void)
     createTrueColorPcx(128, 128, "rgb128x128.pcx");
     createTrueColorPcx(129, 129, "rgb129x129.pcx");
 
-    loadTrueColorPcx("g126x126.pcx", "out.pcx");
+    loadGrayScalePcx("g126x126.pcx", "out1.pcx");
+    loadTrueColorPcx("rgb126x126.pcx", "out2.pcx");
+    loadGrayScalePcx("g129x129.pcx", "out3.pcx");
+    loadTrueColorPcx("rgb129x129.pcx", "out4.pcx");
 
     return 0;
 }

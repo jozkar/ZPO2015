@@ -2,10 +2,10 @@
  *  Autori: Zdenek Biberle (xbiber00), Josef Ridky(xridky00), Zdenek Tretter (xtrett00)
  *  Popis: Implementace nacitani a ukladani obrazu ve formatu PCX (8 bitu - grayscale, 24 bitu - RGB)
  *  Datum: 9. 5. 2015
- */   
+ */
 #include "pcx.hpp"
 
-/* 
+/*
  *  Konstruktor bitmapy
  */
 BMP::BMP(int type, unsigned int width, unsigned int height){
@@ -36,7 +36,7 @@ void BMP::createGrayScale(unsigned int width, unsigned int height){
 		std::cerr << "Zero width or height.\n";
 		exit(ERROR);
 	}
-	
+
 	this->setType(GrayScale);
     this->setBitsPerPixel(8);
     this->setWidth(width);
@@ -45,20 +45,20 @@ void BMP::createGrayScale(unsigned int width, unsigned int height){
     size = this->getBytesPerLine() * this->getHeight();
     this->setPixelCount(width * height);
     this->setByteCount(size);
-    
+
 	this->pixels = (unsigned char *)malloc(sizeof(unsigned char) * size);
-	
+
 	if(this->pixels == NULL){
 		std::cout << "ERROR: Not enough memory on heap.\n";
 		exit(ERROR);
 	}
-	
+
 	fillPixels();
 }
 
 /*
  *  Funkce pro vytvoreni RGP bitmapy
- */ 
+ */
 void BMP::createTrueColor(unsigned int width, unsigned int height){
 
     unsigned int size;
@@ -67,7 +67,7 @@ void BMP::createTrueColor(unsigned int width, unsigned int height){
 		std::cerr << "Zero width or height.\n";
 		exit(ERROR);
 	}
-	
+
 	this->setType(TrueColor);
     this->setBitsPerPixel(24);
     this->setWidth(width);
@@ -76,27 +76,27 @@ void BMP::createTrueColor(unsigned int width, unsigned int height){
     size = this->getBytesPerLine() * this->getHeight();
     this->setPixelCount(width * height);
     this->setByteCount(size);
-    
+
 	this->pixels = (unsigned char *)malloc(sizeof(unsigned char) * size);
 
 	if(this->pixels == NULL){
 		std::cout << "ERROR: Not enough memory on heap.\n";
 		exit(ERROR);
 	}
-	
+
 	fillPixels();
 }
 
 /*
  *  Uvolneni pameti po poli pixelu
- */ 
+ */
 BMP::~BMP(){
     free(this->pixels);
 }
 
 /*
  *  Vyplneni bitmapy podle barevneho modelu
- */ 
+ */
 void BMP::fillPixels(){
 
     unsigned char *pixel = this->pixels;
@@ -131,74 +131,74 @@ void BMP::fillPixels(){
 std::string BMP::getInfo(){
 
     std::ostringstream stream;
-    stream << "width: " << this->getWidth() << 
-			  "    height: " << this->getHeight() << 
+    stream << "width: " << this->getWidth() <<
+			  "    height: " << this->getHeight() <<
 			  "  bpp: " << this->getBitsPerPixel();
-			  
+
   	return stream.str();
 }
 
 /*
  *  Ziskani typu bitmapy
- */ 
+ */
 int BMP::getType(){
-    
+
 	return this->type;
 }
 
 /*
  *  Ziskani sirky
- */ 
+ */
 unsigned int BMP::getWidth(){
-    
+
 	return this->width;
 }
 
 /*
  *  Ziskani vysky
- */ 
+ */
 unsigned int BMP::getHeight(){
-    
+
 	return this->height;
 }
 
 /*
  *  Ziskani bajtu na radek
- */ 
+ */
 unsigned int BMP::getBytesPerLine(){
-    
+
 	return this->bytesPerLine;
 }
 
 /*
  *  Ziskani bitu na pixel
- */ 
+ */
 unsigned int BMP::getBitsPerPixel(){
-    
+
 	return this->bitsPerPixel;
 }
 
 /*
  *  Ziskani celkoveho poctu pixelu
- */ 
+ */
 unsigned int BMP::getPixelCount(){
-    
+
 	return this->pixelCount;
 }
 
 /*
  *  Ziskani celkoveho poctu bajtu
- */ 
+ */
 unsigned int BMP::getByteCount(){
-    
+
 	return this->byteCount;
 }
 
 /*
  *  Ziskani barvy
- */ 
+ */
 unsigned int BMP::getColor(){
-    
+
 	return this->color;
 }
 
@@ -212,15 +212,15 @@ unsigned int BMP::getRLE(){
 
 /*
  *  Ziskani hodnoty pixelu ze zadane pozice
- */ 
+ */
 int BMP::getPixel(int x, int y){
 
     if((x < 0 || x >= (int)this->getWidth()) &&
 	   (y < 0 || y >= (int)this->getHeight())){
-	   
+
 	   return 0;
 	}
-	
+
     switch (this->getType()) {
         case GrayScale: return getPixelGrayScale(x, y);
             			break;
@@ -233,7 +233,7 @@ int BMP::getPixel(int x, int y){
 
 /*
  *  Ziskani hodnoty pixelu ze zadane pozice (verze pro GrayScale)
- */ 
+ */
 int BMP::getPixelGrayScale(int x, int y){
 
     return *(this->pixels + x + y * this->getBytesPerLine());
@@ -241,65 +241,65 @@ int BMP::getPixelGrayScale(int x, int y){
 
 /*
  *  Ziskani hodnoty pixelu ze zadane pozice (verze pro RGB)
- */ 
+ */
 int BMP::getPixelRGB(int x, int y){
 
 	unsigned char *px;
     int result;
-    
+
 	px = this->pixels + 3 * x + y * this->getBytesPerLine();
     result = *px++;
     result |= (*px++)<<8;
     result |= (*px)<<16;
-    
+
     return result;
 }
 
 /*
  *  Nastaveni typu bitmapy
- */ 
+ */
 void BMP::setType(int type){
 	this->type = type;
 }
 
 /*
  *  Nastaveni "Bitu na pixel"
- */ 
+ */
 void BMP::setBitsPerPixel(unsigned int bpp){
 	this->bitsPerPixel = bpp ;
 }
 
 /*
- *  Nastaveni sirky obrazu 
- */ 
+ *  Nastaveni sirky obrazu
+ */
 void BMP::setWidth(unsigned int width){
 	this->width = width;
 }
 
 /*
- *  Nastaveni vysky 
- */ 
+ *  Nastaveni vysky
+ */
 void BMP::setHeight(unsigned int height){
 	this->height = height;
 }
 
 /*
- *  Nastaveni bajtu na radek 
- */ 
+ *  Nastaveni bajtu na radek
+ */
 void BMP::setBytesPerLine(unsigned int bpl){
 	this->bytesPerLine = bpl;
 }
 
 /*
- *  Nastaveni poctu pixelu 
- */ 
+ *  Nastaveni poctu pixelu
+ */
 void BMP::setPixelCount(unsigned int count){
 	this->pixelCount = count;
 }
 
 /*
- *  Nastaveni poctu bajtu 
- */ 
+ *  Nastaveni poctu bajtu
+ */
 void BMP::setByteCount(unsigned int count){
 	this->byteCount = count;
 }
@@ -312,7 +312,7 @@ void BMP::setColor(int color){
     if(color > 0x00ffffff){
 		return;
 	}
-	
+
     this->color = color;
     this->R = (unsigned char)(color & 0x000000ff);
     this->G = (unsigned char)((color & 0x0000ff00) >> 8);
@@ -320,10 +320,10 @@ void BMP::setColor(int color){
 }
 
 /*
- *  Nastaveni RGB barvy 
+ *  Nastaveni RGB barvy
  */
 void BMP::setColorRGB(unsigned char r, unsigned char g, unsigned char b){
-    
+
     this->color = (r) | (g << 8) | (b << 16);
     this->R = r;
     this->G = g;
@@ -332,15 +332,15 @@ void BMP::setColorRGB(unsigned char r, unsigned char g, unsigned char b){
 
 /*
  *  "Vykresleni" pixelu na danou pozici
- */  
+ */
 void BMP::putPixel(int x, int y){
-    
+
     if((x < 0 || x >= (int)this->getWidth()) &&
        (y < 0 || y >= (int)this->getHeight())){
-	  
+
 	  		return;
 	}
-	
+
     switch (this->getType()) {
         case GrayScale: return putPixelGrayScale(x, y, (unsigned char)this->getColor());
             			break;
@@ -354,7 +354,7 @@ void BMP::putPixel(int x, int y){
 
 /*
  *  "Vykresleni" pixelu na danou pozici (pouzito pro GrayScale)
- */ 
+ */
 void BMP::putPixelGrayScale(int x, int y, unsigned char color){
 
     unsigned char *px;
@@ -391,11 +391,11 @@ void BMP::putPixelRGB(int x, int y, unsigned char r, unsigned char g, unsigned c
  */
 void BMP::moveTo(int x, int y){
 
-    if((x > (int)this->getWidth()) || 
+    if((x > (int)this->getWidth()) ||
        (y > (int)this->getHeight())){
 	   		return;
 	}
-    
+
 	this->cpx = x;
     this->cpy = y;
 }
@@ -406,7 +406,7 @@ void BMP::moveTo(int x, int y){
 void BMP::lineTo(int x, int y)
 {
     unsigned char *px;
-    int dx, dy, npx, delta, di1, di2, xi1, xi2, yi1, yi2, 
+    int dx, dy, npx, delta, di1, di2, xi1, xi2, yi1, yi2,
 		oldCpx = this->cpx, oldCpy = this->cpy;
 
     if((x >= (int)this->getWidth()) ||
@@ -418,8 +418,8 @@ void BMP::lineTo(int x, int y)
         case GrayScale: px = this->pixels + this->cpx + this->cpy * this->getWidth();
             			dx=abs(x - this->cpx);
             			dy=abs(y - this->cpy);
-            
-						if(dx >= dy){     
+
+						if(dx >= dy){
 							// uhel je mensi nez 45 stupnu
                 			npx = dx;
 			                delta = (dy << 1) - dx;
@@ -437,19 +437,19 @@ void BMP::lineTo(int x, int y)
 			                yi1 = yi2 = this->getWidth();
 			                xi2 = 1;
 			            }
-            
-						if((int)this->cpx > x){               
+
+						if((int)this->cpx > x){
 							// inverze x-ovych prirustku
 			                xi1 = -xi1;
 			                xi2 = -xi2;
 			            }
-			            
-						if((int)this->cpy > y){      
+
+						if((int)this->cpy > y){
 						    // inverze y-ovych prirustku
 			                yi1 = -yi1;
 			                yi2 = -yi2;
 			            }
-			            
+
 						for (int i = 0; i <= npx; i++) {
 			                *px = (unsigned char)this->getColor();
 			                if(delta < 0){
@@ -465,8 +465,8 @@ void BMP::lineTo(int x, int y)
 		case TrueColor: px = this->pixels + 3 * (this->cpx + this->cpy * this->getWidth());
             			dx=abs(x - this->cpx);
             			dy=abs(y - this->cpy);
-            
-						if(dx >= dy){     
+
+						if(dx >= dy){
 							// uhel je mensi nez 45 stupnu
                 			npx = dx;
 			                delta = (dy << 1) - dx;
@@ -484,24 +484,24 @@ void BMP::lineTo(int x, int y)
 			                yi1 = yi2 = 3 * this->getWidth();
 			                xi2 = 3;
 			            }
-            
-						if((int)this->cpx > x){               
+
+						if((int)this->cpx > x){
 							// inverze x-ovych prirustku
 			                xi1 = -xi1;
 			                xi2 = -xi2;
 			            }
-			            
-						if((int)this->cpy > y){      
+
+						if((int)this->cpy > y){
 						    // inverze y-ovych prirustku
 			                yi1 = -yi1;
 			                yi2 = -yi2;
 			            }
-			            
+
 						for (int i = 0; i <= npx; i++) {
 			                *px = (unsigned char)this->R;
                 			*(px+1) = (unsigned char)this->G;
                 			*(px+2) = (unsigned char)this->B;
-                			                			
+
 			                if(delta < 0){
 			                    delta += di1;
 			                    px += xi1+yi1;
@@ -514,7 +514,7 @@ void BMP::lineTo(int x, int y)
 
         default: break;
     }
-    
+
     this->cpx = x;
     this->cpy = y;
 }
@@ -539,7 +539,7 @@ void BMP::clear(){
 
 /*
  *  Vyplneni bitmapy aktualni barvou
- */ 
+ */
 void BMP::fill(){
 
     unsigned char *px;
@@ -562,26 +562,26 @@ void BMP::fill(){
 
 /*
  *  Vypsani bajtu na vystup (dvou v pripade kodovaneho vystupu)
- *  Navratova hodnota: pocet zapsanych bajtu 
+ *  Navratova hodnota: pocet zapsanych bajtu
  */
 int BMP::write(unsigned char byt, unsigned int count, FILE *out){
 
     if (count) {
         if ((count == 1) && (0xc0 != (0xc0 & byt))) {
             putc((int)byt, out);
-            return 1;                               
+            return 1;
         }else{
             putc((int)0xC0 | count, out);
             putc((int)byt, out);
-            return 2;                               
+            return 2;
         }
     }
-    return 0;                                       
+    return 0;
 }
 
 /*
  *  Ulozeni bitmapy do PCX souboru
- */ 
+ */
 int BMP::saveToPCX(char *out){
 
     int result;
@@ -589,7 +589,7 @@ int BMP::saveToPCX(char *out){
 	 	std::cerr << "ERROR: Empty output file name.\n";
 		return ERROR;
 	}
-    switch (this->getType()){                         
+    switch (this->getType()){
         case GrayScale: result = saveToGrayScalePCX(out);
             			break;
         case TrueColor: result = saveToTrueColorPCX(out);
@@ -597,72 +597,72 @@ int BMP::saveToPCX(char *out){
         default: result = ERROR;
             	 break;
     }
-    
-    return result;    
+
+    return result;
 }
 
 /*
  *  Ulozeni bitmapy do PCX souboru (pouzito pro GrayScale)
  */
 int BMP::saveToGrayScalePCX(char *out){
-    
-	FILE *fout;                                    
+
+	FILE *fout;
     int size, count, result;
     unsigned char *px;
-    
+
     if(this->pixels == NULL){
-		return ERROR;	
+		return ERROR;
 	}
-    
+
 	if(out == NULL){
 		std::cerr << "ERROR: Empty output file name.\n";
 		return ERROR;
 	}
-	
+
     size = this->getBytesPerLine();
-    
+
     // naplneni hlavicky
     memset(&this->header, 0, sizeof(this->header));
     this->header.id = 10;                                // manufacturer
     this->header.version = 5;                            // Paintbrush version 3.0 and >
     this->header.rle = 1;                                // PCX run length encoding
     this->header.bpp = 8;                                // 1 bit per pixel
-    this->header.xBegin = 0;         
+    this->header.xBegin = 0;
     this->header.yBegin = 0;
     this->header.xEnd = this->getWidth() - 1;
     this->header.yEnd = this->getHeight() - 1;
-    this->header.hDPI = 300;         
-    this->header.vDPI = 300;         
-    this->header.reservedByte = 0;   
+    this->header.hDPI = 300;
+    this->header.vDPI = 300;
+    this->header.reservedByte = 0;
     this->header.numberBitPlanes = 1;
     if (this->getWidth() & 0x01)
         this->header.bytesPerLine = this->getWidth() + 1;
     else
-        this->header.bytesPerLine = this->getWidth();    
-    this->header.paletteType = 1;                        
+        this->header.bytesPerLine = this->getWidth();
+    this->header.paletteType = 1;
 
     fout = fopen(out,"w");
     if(fout == NULL){
 		return ERROR;
-	} 
-    
+	}
+
 	count = fwrite(&this->header, sizeof(this->header), 1, fout);
- 
+
     if(count != 1) {
         fclose(fout);
         return ERROR;
     }
-    
+
     for (int i = this->getHeight() - 1; i >= 0; i--){
         unsigned char character;
         unsigned char last;
         int runCount = 0;
         px = this->pixels + i * size;
         last = ~(*px);
-        
+
         for (int j = 0; j < (signed int)this->getWidth(); j++) {
             character = *px++;
-            if(character == last){ 
+            if(character == last){
                 runCount++;
                 if(runCount == 63){
                     if (!(this->write(last, runCount, fout))) {
@@ -671,7 +671,7 @@ int BMP::saveToGrayScalePCX(char *out){
                     }
                     runCount=0;
                 }
-            }else{                   
+            }else{
                 if (runCount) {
                     if(!(this->write(last, runCount, fout))){
                         fclose(fout);
@@ -682,86 +682,84 @@ int BMP::saveToGrayScalePCX(char *out){
                 runCount = 1;
             }
         }
-        if (runCount) {       
+        if (runCount) {
             if (!(this->write(last, runCount, fout))) {
-                fclose(fout); 
-                return ERROR; 
+                fclose(fout);
+                return ERROR;
             }
         }
         if(this->getBytesPerLine() & 0x01){
 			fputc(0x00, fout);
-		} 
+		}
     }
-    
+
 	fputc(0x0c, fout);
-    
+
     // zapis palety (po slozkach RGB)
-	for(int i = 0; i < 256; i++){                        
-        fputc(i, fout);             
-        fputc(i, fout);             
-        fputc(i, fout);             
-        
+	for(int i = 0; i < 256; i++){
+        fputc(i, fout);
+        fputc(i, fout);
+        fputc(i, fout);
+
     }
-    
+
     fclose(fout);
-    
-	return OK;  
+
+	return OK;
 }
 
 /*
  *  Ulozeni bitmapy do PCX souboru (pouzito pro RGB)
  */
 int BMP::saveToTrueColorPCX(char *out){
-    
-	FILE *fout;                                    
+
+	FILE *fout;
     int size, count, result;
     unsigned char *px;
-    
+
     if(this->pixels == NULL){
-		return ERROR;	
+		return ERROR;
 	}
-    
+
 	if(out == NULL){
 		std::cerr << "ERROR: Empty output file name.\n";
 		return ERROR;
 	}
-	
+
     size = this->getBytesPerLine();
-    
-    if(this->header.id != 10){
-	    // naplneni hlavicky
-	    memset(&this->header, 0, sizeof(this->header));
-	    this->header.id = 10;                                // manufacturer
-	    this->header.version = 5;                            // Paintbrush version 3.0 and >
-	    this->header.rle = 1;                                // PCX run length encoding
-	    this->header.bpp = 8;                                // 1 bit per pixel
-	    this->header.xBegin = 0;         
-	    this->header.yBegin = 0;
-	    this->header.xEnd = this->getWidth() - 1;
-	    this->header.yEnd = this->getHeight() - 1;
-	    this->header.hDPI = 300;         
-	    this->header.vDPI = 300;         
-	    this->header.reservedByte = 0;   
-	    this->header.numberBitPlanes = 3;
-	    if (this->getWidth() & 0x01)
-	        this->header.bytesPerLine = this->getWidth() + 1;
-	    else
-	        this->header.bytesPerLine = this->getWidth();    
-	    this->header.paletteType = 1;
-	}                        
+
+    // naplneni hlavicky
+    memset(&this->header, 0, sizeof(this->header));
+    this->header.id = 10;                                // manufacturer
+    this->header.version = 5;                            // Paintbrush version 3.0 and >
+    this->header.rle = 1;                                // PCX run length encoding
+    this->header.bpp = 8;                                // 1 bit per pixel
+    this->header.xBegin = 0;
+    this->header.yBegin = 0;
+    this->header.xEnd = this->getWidth() - 1;
+    this->header.yEnd = this->getHeight() - 1;
+    this->header.hDPI = 300;
+    this->header.vDPI = 300;
+    this->header.reservedByte = 0;
+    this->header.numberBitPlanes = 3;
+    if (this->getWidth() & 0x01)
+        this->header.bytesPerLine = this->getWidth() + 1;
+    else
+        this->header.bytesPerLine = this->getWidth();
+    this->header.paletteType = 1;
 
     fout = fopen(out,"w");
     if(fout == NULL){
 		return ERROR;
-	} 
-    
+	}
+
 	count = fwrite(&this->header, sizeof(this->header), 1, fout);
- 
+
     if(count != 1) {
         fclose(fout);
         return ERROR;
     }
-    
+
     for (int i = this->getHeight() - 1; i >= 0; i--){
         unsigned char character;
         unsigned char last;
@@ -769,11 +767,11 @@ int BMP::saveToTrueColorPCX(char *out){
             int runCount = 0;
             px = this->pixels + i * size + (2 - l);
             last = ~(*px);
-            
+
             for(int j = 0; j < (signed int)this->getWidth(); j++) {
             	character = *px;
                 px += 3;
-                if(character == last){ 
+                if(character == last){
 	                runCount++;
 	                if(runCount == 63){
 	                    if (!(this->write(last, runCount, fout))) {
@@ -782,7 +780,7 @@ int BMP::saveToTrueColorPCX(char *out){
 	                    }
 	                    runCount=0;
 	                }
-	            }else{                              
+	            }else{
                     if (runCount) {
 	                    if(!(this->write(last, runCount, fout))){
 	                        fclose(fout);
@@ -793,10 +791,10 @@ int BMP::saveToTrueColorPCX(char *out){
 	                runCount = 1;
 	            }
 	        }
-	        if (runCount) {       
+	        if (runCount) {
 	            if (!(this->write(last, runCount, fout))) {
-	                fclose(fout); 
-	                return ERROR; 
+	                fclose(fout);
+	                return ERROR;
 	            }
 	        }
 	        if(this->getBytesPerLine() & 0x01){
@@ -804,23 +802,23 @@ int BMP::saveToTrueColorPCX(char *out){
 			}
         }
     }
-    
+
 	fputc(0x0c, fout);
-    
+
     fclose(fout);
-    
-	return OK;  
+
+	return OK;
 }
 
 
 /*
  *  Nacteni souboru ve formatu PCX
- */ 
+ */
 int BMP::loadFromPCX(char *in){
 
     FILE *fin;
     int width, height;                            // bitmap/pixmap properties
-    
+
     int count;
     unsigned char palette[768];                   // palette
 
@@ -828,26 +826,26 @@ int BMP::loadFromPCX(char *in){
 		std::cerr << "ERROR: Empty input file name.\n";
 		return ERROR;
 	}
-	
+
 	fin = fopen(in, "r");
-    
+
     if(fin){
-        
+
 		count = fread(&this->header, sizeof(this->header), 1, fin);
-        
+
         if(count != 1) {
             std::cerr << "ERROR: Input file is corrupted.\n";
 			fclose(fin);
-            return ERROR;                           
+            return ERROR;
         }
-        
-        
+
+
 		if(this->header.id != 0x0a){
 			std::cerr << "ERROR: Unknown header id in input file.\n";
 		    fclose(fin);
             return ERROR;
         }
-        
+
 		width = this->header.xEnd - this->header.xBegin + 1;
         height = this->header.yEnd - this->header.yBegin + 1;
 
@@ -867,29 +865,29 @@ int BMP::loadFromPCX(char *in){
                palette[i] = this->header.palette[i] >> 2;
            }
         }
-        
+
         if(this->header.bpp == 8 && this->header.numberBitPlanes == 1){
             fseek(fin, -769, SEEK_END);
             int i = getc(fin);
-            if(i == 0x0c){              
+            if(i == 0x0c){
                 for(i = 0; i < 768; i++){
                     palette[i] = ((unsigned char)getc(fin)) >> 2;
                 }
             }
         }
-        
+
         // posun v souboru na bitmapu
-        fseek(fin, sizeof(this->header), SEEK_SET);  
-        
-		while(height--){     
+        fseek(fin, sizeof(this->header), SEEK_SET);
+
+		while(height--){
             unsigned char c;
             unsigned char *opx;
 
             if(this->header.bpp == 8 && this->header.numberBitPlanes == 1){
-                
+
 				opx = this->pixels + height * this->getBytesPerLine();
                 int i=0;
-                
+
                 	do{
 	                    c = (unsigned char)getc(fin);
 	                    if((c & 0xc0) != 0xc0) {       // normal color
@@ -906,17 +904,17 @@ int BMP::loadFromPCX(char *in){
 	                        }
 	                    }
 	                }while(i < width);
-	            
+
             }
-            
-            if(this->header.bpp == 8 && this->header.numberBitPlanes == 3){       
-                
+
+            if(this->header.bpp == 8 && this->header.numberBitPlanes == 3){
+
                 for(int j = 0; j < 3; j++) {
                     opx = this->pixels + height * this->getBytesPerLine() + 2 - j;
                     int i = 0;
-                    
-                    	do {    
-	                        c = (unsigned char)getc(fin); 
+
+                    	do {
+	                        c = (unsigned char)getc(fin);
 	                        if((c & 0xc0) != 0xc0){
 	                            *opx = c;
 	                            opx += 3;
@@ -933,7 +931,7 @@ int BMP::loadFromPCX(char *in){
 	                            }
 	                        }
 	                    } while(i < width);
-	                
+
                 }
             }
         }
@@ -941,5 +939,5 @@ int BMP::loadFromPCX(char *in){
     }else{
         std::cerr << "ERROR: Unable to open input file for reading.\n";
 		return ERROR;
-    }                
+    }
 }
