@@ -25,19 +25,31 @@ enum{
 // PCX hlavicka
 struct PCXHeader{
 		// ID, Verze, RLE kodovani, Bitu na pixel
-		unsigned char id, version, rle, bpp;     
+		unsigned char id;
+		unsigned char version;
+		unsigned char rle;
+		unsigned char  bpp;     
 		
 		// Pocatecni souradnice, Koncove souradnice, horizontalni DPI, vertikalni DPI 
-		unsigned short xBegin, yBegin, xEnd, yEnd, hDPI, vDPI;
+		unsigned short xBegin;
+		unsigned short yBegin;
+		unsigned short xEnd;
+		unsigned short yEnd;
+		unsigned short hDPI;
+		unsigned short vDPI;
 	
 		// Barevna paleta, Rezervovany bajt, Pocet bitovych hladin
-	    unsigned char palette[3 * 16], reservedByte, numberBitPlanes;
+	    unsigned char palette[3 * 16];
+	    unsigned char reservedByte;
+	    unsigned char numberBitPlanes;
 	    
 	    // Bajtu na radek, Typ barevne palety
-	    unsigned short bytesPerLine, paletteType;
-	    
+	    unsigned short bytesPerLine;
+	    unsigned short paletteType;
+	    unsigned short hSize;
+	    unsigned short vSize; 
 		//rezervovane bajty
-		unsigned char reserved2[56];
+		unsigned char reserved2[54];
 };	
 
 // struktura bitmapy
@@ -46,7 +58,7 @@ class BMP{
     unsigned int  width, height, bitsPerPixel, bytesPerLine, pixelCount, 
 		  byteCount, color, cpx, cpy;
     unsigned char *pixels, R, G, B;
-    
+    bool loaded;    
     PCXHeader header;
     
 	public:
