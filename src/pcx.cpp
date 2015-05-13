@@ -876,6 +876,9 @@ int BMP::loadFromPCX(char *in){
                 int i=0;
 
                 	do{
+                        if((height + 1) == this->header.yEnd - this->header.yBegin + 1);
+                        else if(this->getBytesPerLine() & 0x01 && i == 0)
+                           c = (unsigned char)getc(fin);
 	                    c = (unsigned char)getc(fin);
 	                    if((c & 0xc0) != 0xc0) {       // normal color
 	                        *opx++ = c;
