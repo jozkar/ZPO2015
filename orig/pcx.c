@@ -74,7 +74,10 @@ int main(void)
     createTrueColorPcx(127, 127, "rgb127x127.pcx");
     createTrueColorPcx(128, 128, "rgb128x128.pcx");
     createTrueColorPcx(129, 129, "rgb129x129.pcx");
-
+	
+	Bitmap *load;
+	bitmapLoadFromPCX(&load, "g127x127.pcx");
+	bitmapSave2GrayScalePCX(load, "out.pcx");
     return 0;
 }
 
