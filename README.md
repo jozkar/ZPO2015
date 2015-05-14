@@ -47,11 +47,13 @@ Knihovna má následující rozhraní s volací konvencí jazyka C:
 		uint16_t* height_out,
 		ptrdiff_t* pixel_stride_out,
 		ptrdiff_t* row_stride_out,
-		void* (*allocator)(uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*, void*),
-		void (*deallocator)(uint16_t, uint16_t, void*, void*),
+		void* (*allocator)(zpogif_format, uint16_t, uint16_t, ptrdiff_t*, ptrdiff_t*, void*),
+		void (*deallocator)(zpogif_format, uint16_t, uint16_t, void*, void*),
 		void* allocator_data);
 
 Jak je z názvu zjevné, funkce zpogif_save slouží k ukládání obrázků a funkce zpogif_load slouží k nahrávání obrázků.
+
+Hlavičky obou funkcí určené pro uživatele knihovny se nachází v hlavičkovém souboru `zpogif.h`.
 
 #### Funkce zpogif_save
 
@@ -96,15 +98,51 @@ Funkce vrací hodnotu typu zpogif_error, která označuje, zda došlo při nahr�
 
 Jak již bylo zmníněno, tak při nahrávání obrázku ze souboru je k alokaci obrázku v paměti použita uživatelem dodaná alokační funkce. Uživatel by taktéž měl dodat funkci dealokační, aby bylo možné uvolnit alokovanou paměť v případě chyby během nahrávání obrázku.
 
-Alokační funkce má pět parametrů v následujícím pořadí:
-* Šířka obrázku v pixelech
+Alokační funkce má šest parametrů v následujícím pořadí:
+
+* Formát obrázku - ZPOGIF_RGB nebo ZPOGIF_GRAYSCALE.
+* Šířka obrázku v pixelech.
+* Výška obrázku v pixelech.
+* Výstupní ukazatel na krok mezi pixely na řádku.
+* Výstupní ukazatel na krok mezi řádky obrázku.
+* Ukazatel na libovolná uživatelská data.
+
+Alokační funkce musí vráti ukazatel na první pixel obrázku nebo NULL, pokud se alokace nezdařila.
+
+Dealokační funkce má tyto parametry:
+
+* Formát obrázku - ZPOGIF_RGB nebo ZPOGIF_GRAYSCALE.
+* Šířka obrázku v pixelech.
+* Výška obrázku v pixelech.
+* Ukazatel na první pixel obrázku.
+* Ukazatel na libovolná uživatelská data.
+
+#### Princip výpočtu adres pixelů v obrázku
+
+Jak již bylo zmíněno, tak tato knihovna dává uživateli možnost zvolit si způsob uložení obrázku v paměti. Toho je docíleno především pomocí parametrů `pixel_stride` a `row_stride`.
+
+Funkce zpogif_save a zpogif_load používají tyto parametry k výpočtu posunu jednotlivých pixelů v paměti relativně k adrese prvního pixelu. Tento výpočet probíhá následovně:
+
+	offset = y * row_stride + x * pixel_stride
+
+Tento způsob definice adresování má hlavní výhodu v tom, že uživatel může zaručit zarovnání pixelů a řádků nezávisle na velikost obrázku. Představme si například situaci, kdy máme RGB obrázek a chceme, aby každý pixel byl zarovnán na čtyři bajty řádek na šestnáct bajtů. V tom případě zvolíme `pixel_stride` rovno čtyřem a `row_stride` násobek šestnácti.
+
+#### C++ rozhraní
+
+Knihovna poskytuje i C++ rozhraní, které je velice podobné popsanému C rozhraní, ovšem s několika drobnými rozdíly:
+* Funkce se nachází ve jmenném prostoru `zpogif`.
+* Funkce se jmenují `save` a `load`.
+* Obě dvě funkce mohou mít jako vstupní a výstupní soubor typ `FILE*` nebo `std::istream`, resp. `std::ostream`.
+* Ohlašování chyb chybovými kódy je nahrazeno výjimkami.
+* Místo ukazatelů na alokační a dealokační funkce je použita šablona `std::function<...>`.
+* Funkce load již nepřijímá ukazatel na uživatelsk data pro alokační a dealokační funkci.
+
+Toto C++ rozhraní se nachází v hlavičkovém souboru `zpogif.hpp`. 
 
 ## Použité zdroje
 
 TOHLE PŘEPSAT
 
-Django documentation. *Django*. [online]. [cit. 2015-05-12]. Dostupné z: *https://docs.djangoproject.com/en/1.8/*
+GRAPHICS INTERCHANGE FORMAT(sm). *World Wide Web Consortium*. [online]. 31.7.1990 [cit. 2015-05-13]. Dostupné z: *http://www.w3.org/Graphics/GIF/spec-gif89a.txt*
 
-ffmpeg Documentation. *FFmpeg*. [online]. [cit. 2015-05-12]. Dostupné z: *https://ffmpeg.org/ffmpeg.html*
-
-W3Schools Online Web Tutorials. *w3schools.com*. [online]. [cit. 2015-05-12]. Dostupné z: *http://www.w3schools.com/*
+What's In A GIF. *Project Labs*. [online]. 24.1.2005 [cit. 2015-05-13]. Dostupné z: *http://www.matthewflickinger.com/lab/whatsinagif/index.html*
