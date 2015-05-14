@@ -13,15 +13,15 @@ namespace zpogif { namespace detail {
 	{
 		uint8_t r, g, b;
 		
-		inline Rgb():
+		explicit inline Rgb():
 			r(0), g(0), b(0)
 		{}
 		
-		inline Rgb(uint8_t gray):
+		explicit inline Rgb(uint8_t gray):
 			r(gray), g(gray), b(gray)
 		{}
 		
-		inline Rgb(uint8_t r, uint8_t g, uint8_t b):
+		explicit inline Rgb(uint8_t r, uint8_t g, uint8_t b):
 			r(r), g(g), b(b)
 		{}
 		

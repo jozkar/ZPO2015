@@ -190,7 +190,7 @@ namespace zpogif { namespace detail {
 			for (uint32_t x = 0; x < width; x++)
 			{
 				Rgb color = read_color(row_ptr + pixel_stride * x, format);
-				uint8_t idx = color_table[color];
+				uint8_t idx = color_table.at(color);
 				
 				if (x == 0 && y == 0)
 				{
@@ -221,6 +221,7 @@ namespace zpogif { namespace detail {
 							code_table.clear();
 							writer.write(cc);
 							writer.code_size = lzw_min_code_size + 1;
+							next_code = eoi + 1;
 						}
 						
 						buffer.push_back(idx);

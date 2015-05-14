@@ -118,6 +118,11 @@ extern "C"
 		{
 			return ex.error();
 		}
+		catch (std::exception& ex)
+		{
+			std::cout << ex.what() << std::endl;
+			return ZPOGIF_UNIDENTIFIED_ERROR;
+		}
 		catch (...)
 		{
 			return ZPOGIF_UNIDENTIFIED_ERROR;

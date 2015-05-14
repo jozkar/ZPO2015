@@ -243,6 +243,11 @@ namespace zpogif { namespace detail {
 				std::vector<Rgb>& color_table = idesc.has_local_color_table ? idesc.local_color_table : global_color_table;
 				std::map<uint16_t, std::vector<uint8_t>> code_table;
 				
+				for (auto color : color_table)
+				{
+					std::cout << (int)color.r << ", " << (int)color.g << ", " << (int)color.b << std::endl;
+				}
+				
 				int imx = 0;
 				int imy = 0;
 				
@@ -271,6 +276,7 @@ namespace zpogif { namespace detail {
 					{
 						code_table.clear();
 						reader.code_size = minimum_code_size + 1;
+						next_code = eoi + 1;
 						for (unsigned i = 0; i < cc; i++) code_table[i] = std::vector<uint8_t>(1, i);
 						is_first_code = true;
 						continue;
@@ -292,7 +298,6 @@ namespace zpogif { namespace detail {
 						{
 							auto& idx_stream = code_in_table->second;
 							for (auto idx : idx_stream) add_pixel(idx);
-							
 							auto prev_stream = code_table.at(previous_code);
 							prev_stream.push_back(idx_stream[0]);
 							code_table[next_code++] = prev_stream;
@@ -305,7 +310,10 @@ namespace zpogif { namespace detail {
 							code_table[next_code++] = prev_stream;
 						}
 						
-						if (next_code == (1 << reader.code_size)) reader.code_size++;
+						if (next_code == (1 << reader.code_size) && reader.code_size < 12)
+						{
+							reader.code_size++;
+						}
 					}
 					
 					previous_code = code;

@@ -139,6 +139,10 @@ Knihovna poskytuje i C++ rozhraní, které je velice podobné popsanému C rozhr
 
 Toto C++ rozhraní se nachází v hlavičkovém souboru `zpogif.hpp`. 
 
+### Knihovna libzpopcx.so
+
+Tato 
+
 ## Použité zdroje
 
 TOHLE PŘEPSAT

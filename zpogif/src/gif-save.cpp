@@ -12,6 +12,7 @@
 #include <iterator>
 #include <cmath>
 #include <utility>
+#include <list>
 
 #include "common.hpp"
 #include "streamops.hpp"
@@ -20,9 +21,9 @@ namespace zpogif { namespace detail {
 
 	double color_distance(Rgb x, Rgb y)
 	{
-		double r = 0.299 * (x.r - y.r);
-		double g = 0.587 * (x.g - y.g);
-		double b = 0.114 * (x.b - y.b);
+		double r = (x.r - y.r);
+		double g = (x.g - y.g);
+		double b = (x.b - y.b);
 		return std::sqrt(r*r + g*g + b*b);
 	}
 
@@ -60,7 +61,7 @@ namespace zpogif { namespace detail {
 			
 			std::multimap<uint8_t, Rgb> clusters;
 			
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 20; i++)
 			{
 				clusters.clear();
 				for (auto color : colors)
@@ -108,19 +109,14 @@ namespace zpogif { namespace detail {
 						count++;
 					}
 					
-					Rgb new_cluster = Rgb(r / count, g / count, b / count);
+					Rgb new_cluster = count == 0 ? cluster : Rgb(r / count, g / count, b / count);
 					error += color_distance(new_cluster, cluster);
 					color_table[idx] = new_cluster;
 					
 					idx++;
 				}
 				
-				std::cerr << "Doclusterováno, error: " << std::dec << error << std::endl;
-			}
-			
-			for (auto pair : clusters)
-			{
-				idxmap[pair.second] = pair.first;
+				if (error <= 0.5) break;
 			}
 		}
 	}
