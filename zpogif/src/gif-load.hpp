@@ -243,11 +243,6 @@ namespace zpogif { namespace detail {
 				std::vector<Rgb>& color_table = idesc.has_local_color_table ? idesc.local_color_table : global_color_table;
 				std::map<uint16_t, std::vector<uint8_t>> code_table;
 				
-				for (auto color : color_table)
-				{
-					std::cout << (int)color.r << ", " << (int)color.g << ", " << (int)color.b << std::endl;
-				}
-				
 				int imx = 0;
 				int imy = 0;
 				
