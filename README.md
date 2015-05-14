@@ -12,7 +12,7 @@
 
 ## Zadání
 
-Zpracujte funkci pro načítání a ukládání obrazuve vhodném rastrovém formátu (ne ve formátech .JPG, .BMP, nekomprimovaný .TIF, které jsou k dispozici v knihovně DigILib, zájem naopak je o formáty .GIF, .PCX, .PNG, .TIF s kompresí apod.). Funkci pokud možno zpracujte tak, aby nebyla závislá na jiných knihovnách. Měl by být podporován formát grayscale (256 úrovní šedi - 8 bitů/pixel) a RGB (24 bitů/pixel).
+Zpracujte funkci pro načítání a ukládání obrazu ve vhodném rastrovém formátu (ne ve formátech .JPG, .BMP, nekomprimovaný .TIF, které jsou k dispozici v knihovně DigILib, zájem naopak je o formáty .GIF, .PCX, .PNG, .TIF s kompresí apod.). Funkci pokud možno zpracujte tak, aby nebyla závislá na jiných knihovnách. Měl by být podporován formát grayscale (256 úrovní šedi - 8 bitů/pixel) a RGB (24 bitů/pixel).
 
 ## Řešení
 
@@ -63,7 +63,7 @@ Parametry funkce jsou následující:
 
 * `f` - soubor, do kterého bude obrázek zapsán
 * `format` - Formát pixelů obrázku, tento parametr má dvě hodnoty:
-	* `ZPOGIF_RGB` - Každý pixel je uložen jako trojice po sobě jdoucích bajtů s úrovněmi červnené, zelené a modré barvy.
+	* `ZPOGIF_RGB` - Každý pixel je uložen jako trojice po sobě jdoucích bajtů s úrovněmi červené, zelené a modré barvy.
 	* `ZPOGIF_GRAYSCALE` - Každý pixel je uložen jako jeden bajt s hodnotou jasu.
 * `image` - Ukazatel na první pixel obrazových dat. Adresy dalších pixelů se odvíjí od této hodnoty na základě následujících čtyř parametrů.
 * `width` - Šířka obrázku v pixelech.
@@ -75,13 +75,13 @@ Funkce vrací hodnotu typu zpogif_error, která označuje, zda došlo při uklá
 
 #### Funkce zpogif_load
 
-Tato funke přečte obrázek ze souboru a uloží jej do paměti, kterou alokuje pomocí dodaného alokátoru.
+Tato funkce přečte obrázek ze souboru a uloží jej do paměti, kterou alokuje pomocí dodaného alokátoru.
 
 Parametry funkce jsou následující:
 
 * `f` - soubor, ze kterého bude obrázek přečten
 * `format` - Formát pixelů obrázku, tento parametr má dvě hodnoty:
-	* `ZPOGIF_RGB` - Každý pixel bude uložen jako trojice po sobě jdoucích bajtů s úrovněmi červnené, zelené a modré barvy.
+	* `ZPOGIF_RGB` - Každý pixel bude uložen jako trojice po sobě jdoucích bajtů s úrovněmi červené, zelené a modré barvy.
 	* `ZPOGIF_GRAYSCALE` - Každý pixel bude uložen jako jeden bajt s hodnotou jasu.
 * `image_out` - Ukazatel na ukazatel na první pixel obrázku. Tento parametr slouží jako výstup.
 * `width_out` - Ukazatel na šířku obrázku v pixelech. Tato hodnota bude funkcí naplněna po přečtení souboru.
@@ -96,7 +96,7 @@ Funkce vrací hodnotu typu zpogif_error, která označuje, zda došlo při nahr�
 
 #### Alokace a dealokace obrázků
 
-Jak již bylo zmníněno, tak při nahrávání obrázku ze souboru je k alokaci obrázku v paměti použita uživatelem dodaná alokační funkce. Uživatel by taktéž měl dodat funkci dealokační, aby bylo možné uvolnit alokovanou paměť v případě chyby během nahrávání obrázku.
+Jak již bylo zmíněno, tak při nahrávání obrázku ze souboru je k alokaci obrázku v paměti použita uživatelem dodaná alokační funkce. Uživatel by taktéž měl dodat funkci dealokační, aby bylo možné uvolnit alokovanou paměť v případě chyby během nahrávání obrázku.
 
 Alokační funkce má šest parametrů v následujícím pořadí:
 
@@ -107,7 +107,7 @@ Alokační funkce má šest parametrů v následujícím pořadí:
 * Výstupní ukazatel na krok mezi řádky obrázku.
 * Ukazatel na libovolná uživatelská data.
 
-Alokační funkce musí vráti ukazatel na první pixel obrázku nebo NULL, pokud se alokace nezdařila.
+Alokační funkce musí vrátit ukazatel na první pixel obrázku nebo NULL, pokud se alokace nezdařila.
 
 Dealokační funkce má tyto parametry:
 
