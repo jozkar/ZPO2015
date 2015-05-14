@@ -141,12 +141,50 @@ Toto C++ rozhraní se nachází v hlavičkovém souboru `zpogif.hpp`.
 
 ### Knihovna libzpopcx.so
 
-Tato 
+Tato knihovna slouží k nahrávání a ukládání TrueColor RGB a šedotónových obrázků ve formátu PCX ve verzi 3.  
+                                               
+Knihovna má následující rozhraní s volací konvencí jazyka C:
+
+	int saveToPCX(char *out);
+    int loadFromPCX(char *in);
+
+	
+Jak je z názvu zjevné, funkce saveToPCX slouží k ukládání obrázků a funkce loadFromPCX slouží k nahrávání obrázků. Funkce loadFromPCX automaticky podle informací v hlavičce PCX souboru rozpozná, o jaký typ obrazu (šedotónový, TrueColor RGB) se jedná. Funkce saveToPCX poté na základě této detekce ukládá soubor v potřebné barevné verzi.
+
+Hlavičky obou funkcí určené pro uživatele knihovny se nachází v hlavičkovém souboru `zpopcx.h`.
+
+Knihovna pracuje pouze s obrázky, které jsou komprimokvány RLE kompresí.
+
+Pro interní reprezentaci obrázku je využita třída BMP, která obsahuje metody pr načtení a uložení obrázku. Tato třída si uchovává potřebné informace z hlavičky načíteného obrázku jako například jeho šířku, výšku, počet bitů na pixel, počet bitových rovin apod. Tyto informace jsou poté při ukládání obrázku do souboru znovu využity.
+
+#### Funkce saveToPCX
+
+Tato funkce přvede obrázek z interní reprezentace do požadovaného souboru.
+
+Parametry funkce jsou následující:
+
+* `out` - soubor, do kterého bude obrázek uložen
+
+Funkce vrací hodnotu typu int, která označuje, zda došlo při ukládání k nějaké chybě.
+
+#### Funkce loadFromPCX
+
+Tato funke přečte obrázek ze souboru a převede jej do interní reprezentace.
+
+Parametry funkce jsou následující:
+
+* `in` - soubor, ze kterého bude obrázek přečten
+
+Funkce vrací hodnotu typu int, která označuje, zda došlo při nahrávání k nějaké chybě.
+
+Obrázky jsou ukládány s využitím komprimace algoritmem RLE.
 
 ## Použité zdroje
 
 TOHLE PŘEPSAT
 
 GRAPHICS INTERCHANGE FORMAT(sm). *World Wide Web Consortium*. [online]. 31.7.1990 [cit. 2015-05-13]. Dostupné z: *http://www.w3.org/Graphics/GIF/spec-gif89a.txt*
+
+PCX Header Format [online]. [cit. 2015-05-13]. Dostupné z: *http://www.fastgraph.com/help/pcx_header_format.html*
 
 What's In A GIF. *Project Labs*. [online]. 24.1.2005 [cit. 2015-05-13]. Dostupné z: *http://www.matthewflickinger.com/lab/whatsinagif/index.html*
