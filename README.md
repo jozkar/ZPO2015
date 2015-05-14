@@ -153,7 +153,9 @@ Jak je z názvu zjevné, funkce saveToPCX slouží k ukládání obrázků a fun
 
 Hlavičky obou funkcí určené pro uživatele knihovny se nachází v hlavičkovém souboru `zpopcx.h`.
 
-Pro interní reprezentaci obrázku je využita třída BMP, která obsahuje metody pr načtení a uložení obrázku.
+Knihovna pracuje pouze s obrázky, které jsou komprimokvány RLE kompresí.
+
+Pro interní reprezentaci obrázku je využita třída BMP, která obsahuje metody pr načtení a uložení obrázku. Tato třída si uchovává potřebné informace z hlavičky načíteného obrázku jako například jeho šířku, výšku, počet bitů na pixel, počet bitových rovin apod. Tyto informace jsou poté při ukládání obrázku do souboru znovu využity.
 
 #### Funkce saveToPCX
 
