@@ -56,9 +56,8 @@ struct PCXHeader{
 class BMP{
     int type;
     unsigned int  width, height, bitsPerPixel, bytesPerLine, pixelCount, 
-		  byteCount, color, cpx, cpy;
-    unsigned char *pixels, R, G, B;
-    bool loaded;    
+		  byteCount;
+    unsigned char *pixels;
     PCXHeader header;
     
 	public:
@@ -71,11 +70,7 @@ class BMP{
 	// zruseni bitmapy
 	~BMP();
 	
-	// naplneni bitmapy
-	void fillPixels();
-	
 	// gettery
-	std::string getInfo();
 	int getType();
 	unsigned int getWidth();
 	unsigned int getHeight();
@@ -83,11 +78,6 @@ class BMP{
 	unsigned int getBitsPerPixel();
 	unsigned int getPixelCount();
 	unsigned int getByteCount();
-	unsigned int getColor();
-	unsigned int getRLE();
-	int getPixel(int x, int y);
-	int getPixelGrayScale(int x, int y);
-	int getPixelRGB(int x, int y);
 	
 	// settery
 	void setType(int type);
@@ -97,19 +87,6 @@ class BMP{
 	void setBytesPerLine(unsigned int bpl);
 	void setPixelCount(unsigned int count);
 	void setByteCount(unsigned int count);
-	void setColor(int color);
-	void setColorRGB(unsigned char r, unsigned char g, unsigned char b);
-	
-	// "vykreslovaci" funkce
-	void putPixel(int x, int y);
-	void putPixelGrayScale(int x, int y, unsigned char color);
-	void putPixelInt(int x, int y, int color);
-	void putPixelRGB(int x, int y, unsigned char r, unsigned char g, unsigned char b);
-	void moveTo(int x, int y);
-	void lineTo(int x, int y);
-	void line(int x1, int y1, int x2, int y2);
-	void clear();
-	void fill();
 	
 	// funkce pro praci s PCX
 	int write(unsigned char byt, unsigned int coding, FILE *out);
