@@ -135,7 +135,7 @@ Knihovna poskytuje i C++ rozhraní, které je velice podobné popsanému C rozhr
 * Obě dvě funkce mohou mít jako vstupní a výstupní soubor typ `FILE*` nebo `std::istream`, resp. `std::ostream`.
 * Ohlašování chyb chybovými kódy je nahrazeno výjimkami.
 * Místo ukazatelů na alokační a dealokační funkce je použita šablona `std::function<...>`.
-* Funkce load již nepřijímá ukazatel na uživatelsk data pro alokační a dealokační funkci.
+* Funkce `load` již nepřijímá ukazatel na uživatelsk data pro alokační a dealokační funkci.
 
 Toto C++ rozhraní se nachází v hlavičkovém souboru `zpogif.hpp`. 
 
