@@ -181,8 +181,6 @@ Obrázky jsou ukládány s využitím komprimace algoritmem RLE.
 
 ## Použité zdroje
 
-TOHLE PŘEPSAT
-
 GRAPHICS INTERCHANGE FORMAT(sm). *World Wide Web Consortium*. [online]. 31.7.1990 [cit. 2015-05-13]. Dostupné z: *http://www.w3.org/Graphics/GIF/spec-gif89a.txt*
 
 PCX Header Format [online]. [cit. 2015-05-13]. Dostupné z: *http://www.fastgraph.com/help/pcx_header_format.html*
