@@ -1,5 +1,7 @@
 zpogif/libzpogif.so
+zpopcx/libzpopcx.so
 zpogif/obj/
+zpopcx/obj/
 examples/example1
 examples/example2
 examples/example3
