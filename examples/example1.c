@@ -6,7 +6,6 @@
 
 void* allocator(zpogif_format format, uint16_t width, uint16_t height, ptrdiff_t* pixel_stride, ptrdiff_t* row_stride, void* priv);
 void deallocator(zpogif_format format, uint16_t width, uint16_t height, void* image, void* priv);
-int ends_with(const char *str, const char *suffix);
 
 int main(int argc, char** argv)
 {
