@@ -61,7 +61,7 @@ namespace zpogif { namespace detail {
 			
 			std::multimap<uint8_t, Rgb> clusters;
 			
-			for (int i = 0; i < 20; i++)
+			for (int i = 0; i < 10; i++)
 			{
 				clusters.clear();
 				for (auto color : colors)
@@ -117,6 +117,11 @@ namespace zpogif { namespace detail {
 				}
 				
 				if (error <= 0.5) break;
+			}
+			
+			for (auto cluster : clusters)
+			{
+				idxmap[cluster.second] = cluster.first;
 			}
 		}
 	}
