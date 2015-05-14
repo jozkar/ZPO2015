@@ -185,4 +185,6 @@ GRAPHICS INTERCHANGE FORMAT(sm). *World Wide Web Consortium*. [online]. 31.7.199
 
 PCX Header Format [online]. [cit. 2015-05-13]. Dostupné z: *http://www.fastgraph.com/help/pcx_header_format.html*
 
+Grafický formát PCX - výlet do historie PC. *ROOT.cz*. [online]. 11.6.2006 [cit. 2015-05-13]. Dostupné z: *http://www.root.cz/clanky/graficky-format-pcx-vylet-do-historie-pc/*
+
 What's In A GIF. *Project Labs*. [online]. 24.1.2005 [cit. 2015-05-13]. Dostupné z: *http://www.matthewflickinger.com/lab/whatsinagif/index.html*
